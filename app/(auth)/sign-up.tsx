@@ -18,6 +18,123 @@ export default function SignUp() {
 
     const isLoading = fetchStatus === 'fetching';
 
+    if(signUp.status === "complete" || isSignedIn) {
+        return null;
+    }
+
+    const onSignUpPress = async() => {
+        const { error } = await signUp.password({
+            emailAddress: email,
+            password,
+            firstName,
+            lastName,
+        });
+
+        if(error) {
+            alert(error.message);
+            // console.error(JSON.stringify(error.message, null, 2));
+            return;
+        }
+
+        if(!error) {
+            await signUp.verifications.sendEmailCode();
+        }
+    };
+
+    // const onVerifyPress = async() => {
+    //     await signUp.verifications.verifyEmailCode({
+    //         code,
+    //     })
+
+    //     if(signUp.status === 'complete') {
+    //         await signUp.finalize({
+    //             navigate: ({ decorateUrl }) => {
+    //                 const url = decorateUrl("/");
+    //                 router.replace(url as any)
+    //             }
+    //         })
+    //     }
+    // };
+
+    const onVerifyPress = async () => {
+        await signUp.verifications.verifyEmailCode({
+        code,
+        });
+
+        if (signUp.status === "complete") {
+            await signUp.finalize({
+                navigate: ({ session, decorateUrl }) => {
+                if (session?.currentTask) {
+                    console.log(session?.currentTask);
+                    return;
+                }
+                const url = decorateUrl("/");
+                router.replace(url as any);
+                },
+            });
+        } else {
+        console.error("Sign-up attempt not complete:", signUp);
+        }
+    };
+
+    if(
+        signUp.status === 'missing_requirements' &&
+        signUp.unverifiedFields.includes('email_address') &&
+        signUp.missingFields.length === 0
+    ) {
+        return (
+            <View className='flex-1 justify-center px-6 py-12'>
+                <Image
+                    source={require("../../assets/images/kribb.png")}
+                    className='w-32 h-16 mb-8'
+                    resizeMode='contain'
+                />
+
+                <Text className='text-3xl font-bold text-gray-800 mb-2'>Verify Your Account {" "}</Text>
+                <Text className='text-gray-500 mb-2'>We send code to {email}</Text>
+
+                <View className='flex-row gap-3 mb-4'>
+                    <TextInput 
+                        className='flex-1 border border-gray-300 px-4 py-3 rounded-xl'
+                        placeholder='Enter verification code'
+                        value={code}
+                        onChangeText={setCode}
+                        placeholderTextColor="#9CA3AF"
+                        keyboardType='number-pad'
+                    />
+                    {errors.fields.password && (
+                    <Text className='text-red-500 mb-4'>
+                        {errors.fields.password.message}
+                    </Text>
+                )}
+                </View>
+
+                <TouchableOpacity
+                    onPress={onVerifyPress}
+                    disabled={isLoading}
+                    className='w-full py-4 bg-blue-600 rounded-xl items-center mb-4'
+                >
+                    {isLoading ? (
+                        <ActivityIndicator color="white"/>
+                    ): (
+                        <Text className='text-white font-bold text-base'> Verify</Text>
+                    )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => signUp.verifications.sendEmailCode()}
+                    className='py-2'
+                >
+                    {isLoading ? (
+                        <ActivityIndicator color="white"/>
+                    ): (
+                        <Text className='text-blue-600'>I need a new code</Text>
+                    )}
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     return (
         <ScrollView 
             contentContainerStyle={{ flexGrow: 1 }}
@@ -84,6 +201,7 @@ export default function SignUp() {
                 )}
 
                 <TouchableOpacity
+                    onPress={onSignUpPress}
                     disabled={isLoading}
                     className='w-full py-4 bg-blue-600 rounded-xl items-center mb-4'
                 >
@@ -100,6 +218,8 @@ export default function SignUp() {
                             <Text className='text-blue-500 font-semibold'>Sign In</Text>
                         </Link>
                 </View>
+
+                <View nativeID='clerk-captcha'/>
 
             </View>
         </ScrollView>
