@@ -4,7 +4,7 @@
     "slug": "Property-Listing-App",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/kribb.png",
     "scheme": "propertylistingapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -31,7 +31,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/kribb.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
