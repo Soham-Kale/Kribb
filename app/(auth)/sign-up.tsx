@@ -41,21 +41,6 @@ export default function SignUp() {
         }
     };
 
-    // const onVerifyPress = async() => {
-    //     await signUp.verifications.verifyEmailCode({
-    //         code,
-    //     })
-
-    //     if(signUp.status === 'complete') {
-    //         await signUp.finalize({
-    //             navigate: ({ decorateUrl }) => {
-    //                 const url = decorateUrl("/");
-    //                 router.replace(url as any)
-    //             }
-    //         })
-    //     }
-    // };
-
     const onVerifyPress = async () => {
         await signUp.verifications.verifyEmailCode({
         code,
