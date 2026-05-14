@@ -1,8 +1,11 @@
 import React from 'react'
+import { View, Text } from 'react-native'
 
 const ProfileScreen = () => {
     return (
-        <div>ProfileScreen</div>
+        <View>
+            <Text>ProfileScreen</Text>
+        </View>
     )
 }
 

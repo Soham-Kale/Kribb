@@ -1,8 +1,11 @@
 import React from 'react'
+import { View, Text } from 'react-native'
 
 const SavedScreen = () => {
     return (
-        <div>Saved</div>
+        <View>
+            <Text>Saved</Text>
+        </View>
     )
 }
 
