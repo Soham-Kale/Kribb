@@ -19,7 +19,7 @@ export default function PropertyCard({
 
     return (
         <TouchableOpacity
-            // onPress={() => router.push(`/(root)/property/${property.id}`)}
+            onPress={() => router.push(`/(root)/property/${property.id}`)}
             className='flex-row rounded-2xl mb-4 overflow-hidden bg-white'
             style={{
                 shadowColor: "#000",
