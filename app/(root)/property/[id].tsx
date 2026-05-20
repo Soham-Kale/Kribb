@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '@clerk/expo';
@@ -99,12 +99,16 @@ export default function PropertyDetails() {
         featchProperty();
     }, [id])
 
-    if(!property) {
+    if (!property) {
         return (
-            <View className='flex-1 items-center justify-center bg-white'>
-                <Text className='text-gray-500'>Property not found</Text>
+            <View className="flex-1 items-center justify-center bg-white">
+                {loading ? (
+                    <ActivityIndicator size="large" color="#2563EB" />
+                ) : (
+                    <Text className="text-gray-500">Property not found</Text>
+                )}
             </View>
-        )
+        );
     }
 
     const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${
