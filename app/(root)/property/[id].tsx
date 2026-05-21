@@ -300,8 +300,8 @@ export default function PropertyDetails() {
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                    onPress={handleContactAgent}
-                    className='flex-row items-center justify-center bg-green-600 gap-2 py-4 rounded-2xl mb-4'>
+                        onPress={handleContactAgent}
+                        className='flex-row items-center justify-center bg-green-600 gap-2 py-4 rounded-2xl mb-4'>
                         <Ionicons name='logo-whatsapp' size={20} color="white"/>
                         <Text className='text-white font-bold text-base'>
                             Contact Agent
