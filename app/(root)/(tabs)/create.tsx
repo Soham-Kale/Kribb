@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function Create() {
     return (
-        <SafeAreaView className=''>
+        <SafeAreaView className='flex-1'>
             <View>
                 <Text>Create</Text>
             </View>
