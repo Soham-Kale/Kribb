@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Linking } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router, useLocalSearchParams, useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import WebView from 'react-native-webview'
 
