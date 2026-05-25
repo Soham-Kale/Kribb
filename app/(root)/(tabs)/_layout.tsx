@@ -1,22 +1,13 @@
 import { useUserStore } from "@/store/userStore";
-import { useAuth } from "@clerk/expo";
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
 function AndroidTabs() {
-    const { signOut } = useAuth();
     const isAdmin = useUserStore((state) => state.isAdmin);
 
-    const onPressSignOut = async () => {
-        try {
-        await signOut();
-        router.replace("/sign-in");
-        } catch (error) {
-        alert("Error signing out: " + error);
-        }
-    };
+    console.log("isAdmin", isAdmin);
 
     return (
         <Tabs screenOptions={{ headerShown: false }}>
@@ -66,17 +57,7 @@ function AndroidTabs() {
 }
 
 function IOSTabs() {
-    const { signOut } = useAuth();
     const isAdmin = useUserStore((state) => state.isAdmin);
-
-    const onPressSignOut = async () => {
-        try {
-        await signOut();
-        router.replace("/sign-in");
-        } catch (error) {
-        alert("Error signing out: " + error);
-        }
-    };
 
     return (
         <NativeTabs>
