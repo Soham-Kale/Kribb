@@ -1,6 +1,8 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router';
+import { useSupabase } from '@/hooks/useSupabase';
 
 const TYPES = ["apartment", "house", "villa", "studio"] as const;
 type PropertyType = (typeof TYPES)[number];
@@ -47,7 +49,18 @@ const INITIAL_FORM: FormState = {
     localImages: [],
 };
 
+
 export default function Create() {
+    const router = useRouter();
+    const authSupabase = useSupabase();
+
+    const [form, setForm] = useState<FormState>(INITIAL_FORM);
+
+    const [submitting, setSubmitting] = useState(false);
+    const [uploadingImages, setUploadingImages] = useState(false);
+    const [detectingLocation, setDetectingLocation] = useState(false);
+
+
     return (
         <SafeAreaView className='flex-1 ' >
             <View className='flex-1 align-center justify-content' >
