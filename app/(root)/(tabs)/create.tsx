@@ -30,7 +30,7 @@ interface FormState {
     isFeatured: boolean;
     images: string[];
     localImages: string[];
-}
+};
 
 const INITIAL_FORM: FormState = {
     title: "",
@@ -49,7 +49,6 @@ const INITIAL_FORM: FormState = {
     localImages: [],
 };
 
-
 export default function Create() {
     const router = useRouter();
     const authSupabase = useSupabase();
@@ -60,6 +59,12 @@ export default function Create() {
     const [uploadingImages, setUploadingImages] = useState(false);
     const [detectingLocation, setDetectingLocation] = useState(false);
 
+    const updateForm = (fields: Partial<FormState>) => {
+        setForm((prev) => ({ ...prev, ...fields }));
+    }
+
+    // ─── Image Picker ──────────────────────────────────────────
+    const handlePickImages = async () => {}
 
     return (
         <SafeAreaView className='flex-1 ' >
@@ -68,4 +73,4 @@ export default function Create() {
             </View>
         </SafeAreaView>
     )
-}
+};
