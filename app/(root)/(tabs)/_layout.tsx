@@ -7,8 +7,6 @@ import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 function AndroidTabs() {
     const isAdmin = useUserStore((state) => state.isAdmin);
 
-    console.log("isAdmin", isAdmin);
-
     return (
         <Tabs screenOptions={{ headerShown: false }}>
             <Tabs.Screen
