@@ -76,7 +76,7 @@ const ProfileScreen = () => {
     }
 
     return (
-        <SafeAreaView className='flex-1 bg-white mb-10'>
+        <SafeAreaView edges={['top', 'left', 'right']} className='flex-1 bg-white'>
             <View className='items-center py-8'>
                 <View className='relative'>
                     <Image
@@ -110,15 +110,15 @@ const ProfileScreen = () => {
                     label="Saved Properties"
                     onPress={() => router.push("/(root)/(tabs)/saved")}
                 />
-                <MenuItem 
+                <MenuItem
                     icon="notifications-outline"
                     label="Notifications"
-                    onPress={() => Alert.alert("Comming Soon", "Notifications comming soon!")}
+                    onPress={() => router.push("/(root)/notifications")}
                 />
-                <MenuItem 
+                <MenuItem
                     icon="settings-outline"
                     label="Settings"
-                    onPress={() => Alert.alert("Comming Soon", "Settings comming soon!")}
+                    onPress={() => router.push("/(root)/settings")}
                 />
                 <MenuItem
                     icon="help-circle-outline"

@@ -75,7 +75,7 @@ const HomeScreen = () => {
                             />
 
                             <View className='items-end'>
-                                <Text>{greetingMessage()}👏</Text>
+                                <Text>{greetingMessage()}</Text>
                                 <Text className='text-gray-900 text-base font-bold'>{user?.firstName ?? "User"}</Text>
                             </View>
                         </View>
