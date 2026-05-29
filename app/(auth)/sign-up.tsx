@@ -34,7 +34,6 @@ export default function SignUp() {
 
         if(error) {
             alert(error.message);
-            // console.error(JSON.stringify(error.message, null, 2));
             return;
         }
 
@@ -52,7 +51,6 @@ export default function SignUp() {
             await signUp.finalize({
                 navigate: ({ session, decorateUrl }) => {
                 if (session?.currentTask) {
-                    console.log(session?.currentTask);
                     return;
                 }
                 const url = decorateUrl("/");
@@ -187,19 +185,19 @@ export default function SignUp() {
                     </Text>
                 )}
 
-                <Text className='text-gray-600 mb-2 font-medium'>I am signing up as</Text>
+                <Text className='text-gray-600 mb-2 font-medium'>I want to</Text>
                 <View className='flex-row mb-6 rounded-xl overflow-hidden border border-gray-300'>
                     <TouchableOpacity
                         onPress={() => setIsAdminRole(false)}
                         className={`flex-1 py-3 items-center ${!isAdminRole ? 'bg-blue-600' : 'bg-white'}`}
                     >
-                        <Text className={`font-semibold ${!isAdminRole ? 'text-white' : 'text-gray-600'}`}>User</Text>
+                        <Text className={`font-semibold ${!isAdminRole ? 'text-white' : 'text-gray-600'}`}>Browse Properties</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => setIsAdminRole(true)}
                         className={`flex-1 py-3 items-center ${isAdminRole ? 'bg-blue-600' : 'bg-white'}`}
                     >
-                        <Text className={`font-semibold ${isAdminRole ? 'text-white' : 'text-gray-600'}`}>Admin</Text>
+                        <Text className={`font-semibold ${isAdminRole ? 'text-white' : 'text-gray-600'}`}>List My Property</Text>
                     </TouchableOpacity>
                 </View>
 

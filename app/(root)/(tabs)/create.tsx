@@ -1,4 +1,5 @@
 import { useSupabase } from "@/hooks/useSupabase";
+import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
@@ -66,6 +67,7 @@ const INITIAL_FORM: FormState = {
 export default function CreatePropertyScreen() {
     const router = useRouter();
     const authSupabase = useSupabase();
+    const { userId } = useAuth();
 
     const [form, setForm] = useState<FormState>(INITIAL_FORM);
 
@@ -201,29 +203,39 @@ export default function CreatePropertyScreen() {
 
         setSubmitting(true);
 
-        const { error } = await authSupabase.from("properties").insert({
-            title: form.title.trim(),
-            description: form.description.trim(),
-            price: priceNum,
-            type: form.type,
-            bedrooms: form.bedrooms,
-            bathrooms: form.bathrooms,
-            area_sqft: form.areaSqft ? Number(form.areaSqft) : null,
-            address: form.address.trim(),
-            city: form.city.trim(),
-            latitude: form.latitude ? Number(form.latitude) : null,
-            longitude: form.longitude ? Number(form.longitude) : null,
-            images: form.images,
-            is_featured: form.isFeatured,
-            is_sold: false,
-        });
+        const { data: inserted, error } = await authSupabase
+            .from("properties")
+            .insert({
+                title: form.title.trim(),
+                description: form.description.trim(),
+                price: priceNum,
+                type: form.type,
+                bedrooms: form.bedrooms,
+                bathrooms: form.bathrooms,
+                area_sqft: form.areaSqft ? Number(form.areaSqft) : null,
+                address: form.address.trim(),
+                city: form.city.trim(),
+                latitude: form.latitude ? Number(form.latitude) : null,
+                longitude: form.longitude ? Number(form.longitude) : null,
+                images: form.images,
+                is_featured: form.isFeatured,
+                is_sold: false,
+            })
+            .select("id")
+            .single();
 
         setSubmitting(false);
 
         if (error) {
             Alert.alert("Error", "Failed to create property. Please try again.");
-            console.error(error);
             return;
+        }
+
+        if (inserted?.id && userId) {
+            await authSupabase
+                .from("properties")
+                .update({ owner_clerk_id: userId })
+                .eq("id", inserted.id);
         }
 
         setForm(INITIAL_FORM);

@@ -15,4 +15,5 @@ export interface Property {
     is_featured: boolean;
     is_sold: boolean;
     created_at: string;
+    owner_clerk_id: string | null;
 }

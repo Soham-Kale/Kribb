@@ -34,13 +34,16 @@ export default function PropertyDetails() {
 
     const { isSaved, toggleSave, saveLoading } = useSavedProperty(id ?? "");
 
-    const featchProperty = async() => {
-        const { data } = await supabase
+    const fetchProperty = async() => {
+        const { data, error } = await supabase
         .from("properties")
         .select("*")
         .eq("id", id)
         .single();
 
+        if (error) {
+            Alert.alert("Error", "Failed to load property. Please try again.");
+        }
         setProperty(data);
         setLoading(false);
     }
@@ -66,11 +69,15 @@ export default function PropertyDetails() {
             {
                 text: "Mark Sold",
                 onPress: async () => {
-                    await authSupabase
-                    .from("properties")
-                    .update({ is_sold: true })
-                    .eq("id", id);
+                    const { error } = await authSupabase
+                        .from("properties")
+                        .update({ is_sold: true })
+                        .eq("id", id);
 
+                    if (error) {
+                        Alert.alert("Error", "Failed to mark as sold. Please try again.");
+                        return;
+                    }
                     setProperty((prev) => prev ? { ...prev, is_sold: true } : prev);
                 },
             },
@@ -80,15 +87,19 @@ export default function PropertyDetails() {
     const handleDelete = () => {
         Alert.alert("Delete Property", "Are you sure?", [
             { text: "Cancel", style: "cancel" },
-                {
+            {
                 text: "Delete",
                 style: "destructive",
                 onPress: async () => {
-                    await authSupabase
-                    .from("properties")
-                    .delete()
-                    .eq("id", id);
+                    const { error } = await authSupabase
+                        .from("properties")
+                        .delete()
+                        .eq("id", id);
 
+                    if (error) {
+                        Alert.alert("Error", "Failed to delete property. Please try again.");
+                        return;
+                    }
                     router.replace("/(root)/(tabs)");
                 },
             },
@@ -96,7 +107,7 @@ export default function PropertyDetails() {
     };
 
     useEffect(() => {
-        featchProperty();
+        fetchProperty();
     }, [id])
 
     if (!property) {
@@ -308,7 +319,7 @@ export default function PropertyDetails() {
                         </Text>
                     </TouchableOpacity>
 
-                    {isAdmin && (
+                    {isAdmin && property.owner_clerk_id === userId && (
                         <View className='flex-row gap-3'>
                             {!property.is_sold && (
                                 <TouchableOpacity 

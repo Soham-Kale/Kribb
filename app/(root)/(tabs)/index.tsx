@@ -4,9 +4,9 @@ import { supabase } from '@/lib/supabase';
 import { Property } from '@/types';
 import { useAuth, useUser } from '@clerk/expo';
 import { Ionicons } from '@expo/vector-icons';
-import { router, useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react'
-import { View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator, RefreshControl, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const HomeScreen = () => {
@@ -16,26 +16,39 @@ const HomeScreen = () => {
     const [featured, setFeatured] = useState<Property[]>([]);
     const [recommended, setRecommended] = useState<Property[]>([]);
     const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const featchProperties = async() => {
-        setLoading(true);
+    const fetchProperties = async (isRefresh = false) => {
+        if (isRefresh) setRefreshing(true);
+        else setLoading(true);
 
-        const { data: featured } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("is_featured", true)
-        .order("created_at", { ascending: false });
+        const [featuredRes, recommendedRes] = await Promise.all([
+            supabase
+                .from("properties")
+                .select("*")
+                .eq("is_featured", true)
+                .order("created_at", { ascending: false })
+                .limit(10),
+            supabase
+                .from("properties")
+                .select("*")
+                .eq("is_featured", false)
+                .order("created_at", { ascending: false })
+                .limit(20),
+        ]);
 
-        const { data: recommended } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("is_featured", false)
-        .order("created_at", { ascending: false });
+        if (featuredRes.error || recommendedRes.error) {
+            Alert.alert("Error", "Failed to load properties. Please try again.");
+        } else {
+            setFeatured(featuredRes.data ?? []);
+            setRecommended(recommendedRes.data ?? []);
+        }
 
-        setFeatured(featured ?? []);
-        setRecommended(recommended ?? []);
-        setLoading(false);
-    }
+        if (isRefresh) setRefreshing(false);
+        else setLoading(false);
+    };
+
+    const onRefresh = () => fetchProperties(true);
 
     const greetingMessage = () => {
         const hour = new Date().getHours();
@@ -53,7 +66,7 @@ const HomeScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            featchProperties();
+            fetchProperties();
         }, [])
     )
 
@@ -64,6 +77,7 @@ const HomeScreen = () => {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ paddingBottom: 100 }}
                 showsVerticalScrollIndicator={false}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#2563EB"]} tintColor="#2563EB" />}
                 ListHeaderComponent={
                     <View>
                         {/* Header */}
