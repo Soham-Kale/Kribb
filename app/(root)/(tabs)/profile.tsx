@@ -138,6 +138,15 @@ const ProfileScreen = () => {
                         )
                     }
                 />
+                <MenuItem
+                    icon="document-text-outline"
+                    label="Privacy Policy"
+                    onPress={() =>
+                        Linking.openURL(
+                            "https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478",
+                        )
+                    }
+                />
             </View>
 
             <View className="px-6 mt-auto mb-8">
