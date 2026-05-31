@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert, ActivityIndicator, Share, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '@clerk/expo';
@@ -29,6 +29,10 @@ export default function PropertyDetails() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [expanded, setExpanded] = useState(false);
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
+    const [emiOpen, setEmiOpen] = useState(false);
+    const [emiLoan, setEmiLoan] = useState('');
+    const [emiRate, setEmiRate] = useState('8.5');
+    const [emiTenure, setEmiTenure] = useState('20');
 
     const authSupabase = useSupabase();
 
@@ -51,6 +55,13 @@ export default function PropertyDetails() {
     const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
         const index = Math.round(e.nativeEvent.contentOffset.x / width);
         setActiveIndex(index);
+    };
+
+    const handleShare = async () => {
+        if (!property) return;
+        await Share.share({
+            message: `${property.title} — ${formatPrice(property.price)}\n${property.address}, ${property.city}\n\nFind it on Kribb!`,
+        });
     };
 
     const handleContactAgent = () => {
@@ -178,18 +189,27 @@ export default function PropertyDetails() {
                                 <Ionicons name="arrow-back" size={20} color="#111827" />
                             </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={toggleSave}
-                                disabled={saveLoading}
-                                className="w-10 h-10 bg-white rounded-full items-center justify-center"
-                                style={{ elevation: 3 }}
+                            <View className="flex-row gap-2">
+                                <TouchableOpacity
+                                    onPress={handleShare}
+                                    className="w-10 h-10 bg-white rounded-full items-center justify-center"
+                                    style={{ elevation: 3 }}
                                 >
-                                <Ionicons
-                                    name={isSaved ? "heart" : "heart-outline"}
-                                    size={20}
-                                    color={isSaved ? "#EF4444" : "#111827"}
-                                />
-                            </TouchableOpacity>
+                                    <Ionicons name="share-outline" size={20} color="#111827" />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={toggleSave}
+                                    disabled={saveLoading}
+                                    className="w-10 h-10 bg-white rounded-full items-center justify-center"
+                                    style={{ elevation: 3 }}
+                                >
+                                    <Ionicons
+                                        name={isSaved ? "heart" : "heart-outline"}
+                                        size={20}
+                                        color={isSaved ? "#EF4444" : "#111827"}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </SafeAreaView>
                 </View>
@@ -310,35 +330,114 @@ export default function PropertyDetails() {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         onPress={handleContactAgent}
                         className='flex-row items-center justify-center bg-green-600 gap-2 py-4 rounded-2xl mb-4'>
                         <Ionicons name='logo-whatsapp' size={20} color="white"/>
-                        <Text className='text-white font-bold text-base'>
-                            Contact Agent
-                        </Text>
+                        <Text className='text-white font-bold text-base'>Contact Agent</Text>
                     </TouchableOpacity>
 
-                    {isAdmin && property.owner_clerk_id === userId && (
-                        <View className='flex-row gap-3'>
-                            {!property.is_sold && (
-                                <TouchableOpacity 
-                                    onPress={handleMarkSold}
-                                    className='flex-1 flex-row items-center justify-center gap-2
-                                    bg-amber-50 py-4 rounded-2xl border border-amber-200'>
-                                    <Ionicons name='checkmark-circle-outline' size={18} color="#"/>
-                                    <Text className='text-amber-600 font-semibold'>Mark Sold</Text>
-                                </TouchableOpacity>
-                            )}
-                            <TouchableOpacity 
-                                onPress={handleDelete}
-                                className='flex-1 flex-row items-center justify-center gap-2
-                                bg-red-50 py-4 rounded-2xl border border-red-200'>
-                                <Ionicons name='trash-outline' size={18} color="#"/>
-                                <Text className='text-red-500 font-semibold'>Delete</Text>
-                            </TouchableOpacity>
+                    {/* EMI Calculator */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            setEmiOpen(v => !v);
+                            if (!emiLoan) setEmiLoan(String(property.price));
+                        }}
+                        className='flex-row items-center justify-between bg-blue-50 px-4 py-4 rounded-2xl mb-3 border border-blue-100'
+                    >
+                        <View className='flex-row items-center gap-2'>
+                            <Ionicons name='calculator-outline' size={20} color="#2563EB" />
+                            <Text className='text-blue-700 font-semibold text-base'>EMI Calculator</Text>
                         </View>
-                        )}
+                        <Ionicons name={emiOpen ? 'chevron-up' : 'chevron-down'} size={18} color="#2563EB" />
+                    </TouchableOpacity>
+
+                    {emiOpen && (() => {
+                        const P = Number(emiLoan) || 0;
+                        const r = (Number(emiRate) || 0) / 12 / 100;
+                        const n = (Number(emiTenure) || 0) * 12;
+                        const emi = r > 0 && n > 0 ? (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : 0;
+                        const total = emi * n;
+                        const interest = total - P;
+                        return (
+                            <View className='bg-white border border-gray-200 rounded-2xl p-4 mb-4'>
+                                <View className='gap-3 mb-4'>
+                                    <View>
+                                        <Text className='text-xs font-semibold text-gray-600 mb-1'>Loan Amount (₹)</Text>
+                                        <TextInput
+                                            value={emiLoan}
+                                            onChangeText={setEmiLoan}
+                                            keyboardType='numeric'
+                                            className='bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-800'
+                                        />
+                                    </View>
+                                    <View className='flex-row gap-3'>
+                                        <View className='flex-1'>
+                                            <Text className='text-xs font-semibold text-gray-600 mb-1'>Interest Rate (%)</Text>
+                                            <TextInput
+                                                value={emiRate}
+                                                onChangeText={setEmiRate}
+                                                keyboardType='numeric'
+                                                className='bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-800'
+                                            />
+                                        </View>
+                                        <View className='flex-1'>
+                                            <Text className='text-xs font-semibold text-gray-600 mb-1'>Tenure (years)</Text>
+                                            <TextInput
+                                                value={emiTenure}
+                                                onChangeText={setEmiTenure}
+                                                keyboardType='numeric'
+                                                className='bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-gray-800'
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                                <View className='bg-blue-50 rounded-xl p-3 gap-2'>
+                                    <View className='flex-row justify-between'>
+                                        <Text className='text-gray-600 text-sm'>Monthly EMI</Text>
+                                        <Text className='text-blue-700 font-bold text-sm'>{formatPrice(Math.round(emi))}</Text>
+                                    </View>
+                                    <View className='flex-row justify-between'>
+                                        <Text className='text-gray-600 text-sm'>Total Payment</Text>
+                                        <Text className='text-gray-800 font-semibold text-sm'>{formatPrice(Math.round(total))}</Text>
+                                    </View>
+                                    <View className='flex-row justify-between'>
+                                        <Text className='text-gray-600 text-sm'>Total Interest</Text>
+                                        <Text className='text-red-500 font-semibold text-sm'>{formatPrice(Math.round(interest))}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        );
+                    })()}
+
+                    {isAdmin && property.owner_clerk_id === userId && (
+                        <View className='gap-3'>
+                            <TouchableOpacity
+                                onPress={() => router.push(`/(root)/edit-property/${property.id}`)}
+                                className='flex-row items-center justify-center gap-2 bg-blue-600 py-4 rounded-2xl'
+                                style={{ shadowColor: '#2563EB', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 }}
+                            >
+                                <Ionicons name='create-outline' size={18} color="white" />
+                                <Text className='text-white font-bold'>Edit Listing</Text>
+                            </TouchableOpacity>
+                            <View className='flex-row gap-3'>
+                                {!property.is_sold && (
+                                    <TouchableOpacity
+                                        onPress={handleMarkSold}
+                                        className='flex-1 flex-row items-center justify-center gap-2 bg-amber-50 py-4 rounded-2xl border border-amber-200'>
+                                        <Ionicons name='checkmark-circle-outline' size={18} color="#D97706" />
+                                        <Text className='text-amber-600 font-semibold'>Mark Sold</Text>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    onPress={handleDelete}
+                                    className='flex-1 flex-row items-center justify-center gap-2 bg-red-50 py-4 rounded-2xl border border-red-200'>
+                                    <Ionicons name='trash-outline' size={18} color="#EF4444" />
+                                    <Text className='text-red-500 font-semibold'>Delete</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
 

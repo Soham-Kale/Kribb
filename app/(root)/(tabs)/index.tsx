@@ -1,12 +1,13 @@
 import FeaturedCard from '@/components/FeaturedCard';
 import PropertyCard from '@/components/PropertyCard';
+import { SkeletonFeaturedCard, SkeletonPropertyCard } from '@/components/SkeletonLoader';
 import { supabase } from '@/lib/supabase';
 import { Property } from '@/types';
-import { useAuth, useUser } from '@clerk/expo';
+import { useUser } from '@clerk/expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react'
-import { View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator, RefreshControl, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, Image, RefreshControl, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const HomeScreen = () => {
@@ -125,13 +126,11 @@ const HomeScreen = () => {
                                 Featured
                             </Text>
 
-                            {loading? (
-                                <ActivityIndicator 
-                                    size='small'
-                                    color="#2563EB"
-                                    className='py-10'
-                                />
-                            ): (
+                            {loading ? (
+                                <View className="flex-row px-5 gap-3">
+                                    {[1, 2, 3].map((i) => <SkeletonFeaturedCard key={i} />)}
+                                </View>
+                            ) : (
                                 <FlatList
                                     data={featured}
                                     keyExtractor={(item) => item.id}
@@ -154,11 +153,15 @@ const HomeScreen = () => {
                     </View>
                 )}
                 ListEmptyComponent={
-                    !loading ? (
+                    loading ? (
+                        <View className='px-5'>
+                            {[1,2,3,4,5].map((i) => <SkeletonPropertyCard key={i} />)}
+                        </View>
+                    ) : (
                         <View className='items-center py-10'>
                             <Text className='text-gray-400'>No properties found</Text>
                         </View>
-                    ) : null
+                    )
                 }
             />            
         </SafeAreaView>

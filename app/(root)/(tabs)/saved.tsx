@@ -4,8 +4,8 @@ import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { SkeletonPropertyCard } from "@/components/SkeletonLoader";
 import {
-    ActivityIndicator,
     FlatList,
     Text,
     TouchableOpacity,
@@ -63,8 +63,8 @@ export default function SavedScreen() {
         </View>
 
         {loading ? (
-            <View className="flex-1 items-center justify-center">
-                <ActivityIndicator size="large" color="#2563EB" />
+            <View className="px-5 pt-2">
+                {[1,2,3,4].map((i) => <SkeletonPropertyCard key={i} />)}
             </View>
         ) : (
             <FlatList

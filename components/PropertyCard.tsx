@@ -1,12 +1,13 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
+import React, { memo } from 'react'
+import { Image } from 'expo-image'
 import { Property } from '@/types'
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { formatPrice } from '@/lib/utils';
 import { useSavedProperty } from '@/hooks/useSavedProperty';
 
-export default function PropertyCard({
+function PropertyCard({
     property,
     onUnSave,
     showSave = false,
@@ -15,7 +16,6 @@ export default function PropertyCard({
     onUnSave?: () => void;
     showSave?: boolean;
 }) {
-
     const router = useRouter();
     const { isSaved, saveLoading, toggleSave } = useSavedProperty(property.id, onUnSave);
 
@@ -35,19 +35,17 @@ export default function PropertyCard({
             <Image
                 source={
                     property.images.length > 0
-                    ? { uri: property.images[0] }
+                    ? property.images[0]
                     : require("@/assets/images/kribb.png")
                 }
-                className='w-28 h-28'
-                resizeMode='cover'
+                style={{ width: 112, height: 112 }}
+                contentFit="cover"
+                cachePolicy="memory-disk"
             />
 
             <View className="flex-1 p-3 justify-between">
                 <View>
-                    <Text
-                        className="text-sm font-bold text-gray-800 mb-1"
-                        numberOfLines={1}
-                    >
+                    <Text className="text-sm font-bold text-gray-800 mb-1" numberOfLines={1}>
                         {property.title}
                     </Text>
 
@@ -65,44 +63,37 @@ export default function PropertyCard({
 
                         {property.is_sold && (
                             <View className="bg-red-50 px-2 py-0.5 rounded-full">
-                                <Text className="text-red-500 text-xs font-semibold">
-                                    Sold
-                                </Text>
+                                <Text className="text-red-500 text-xs font-semibold">Sold</Text>
                             </View>
                         )}
 
                         <View className="flex-row gap-3">
                             <View className="flex-row items-center gap-1">
                                 <Ionicons name="bed-outline" size={11} color="#6B7280" />
-                                
-                                <Text className="text-xs text-gray-500">
-                                {property.bedrooms} bd
-                                </Text>
+                                <Text className="text-xs text-gray-500">{property.bedrooms} bd</Text>
                             </View>
-
                             <View className="flex-row items-center gap-1">
                                 <Ionicons name="expand-outline" size={11} color="#6B7280" />
-                                
-                                <Text className="text-xs text-gray-500">
-                                {property.area_sqft} ft²
-                                </Text>
+                                <Text className="text-xs text-gray-500">{property.area_sqft} ft²</Text>
                             </View>
                         </View>
                     </View>
                 </View>
             </View>
 
-            <TouchableOpacity 
+            <TouchableOpacity
                 onPress={toggleSave}
                 disabled={saveLoading}
                 className='w-8 items-center pt-3 mr-5'
             >
                 <Ionicons
-                    name= { isSaved ? "heart" :  "heart-outline"}
+                    name={isSaved ? "heart" : "heart-outline"}
                     size={18}
-                    color={ isSaved ? "#EF4444" : "#9CA3AF" }
+                    color={isSaved ? "#EF4444" : "#9CA3AF"}
                 />
             </TouchableOpacity>
         </TouchableOpacity>
     )
 }
+
+export default memo(PropertyCard);

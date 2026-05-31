@@ -2,15 +2,15 @@ import { formatPrice } from '@/lib/utils';
 import { Property } from '@/types'
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'
-import React from 'react'
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import React, { memo } from 'react'
+import { Image } from 'expo-image';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 const FeaturedCard = ({ property }: { property: Property }) => {
-
     const router = useRouter();
 
     return (
-        <TouchableOpacity 
+        <TouchableOpacity
             onPress={() => router.push(`/(root)/property/${property.id}`)}
             className='w-72 mr-2 rounded-3xl overflow-hidden bg-white'
             style={{
@@ -25,11 +25,12 @@ const FeaturedCard = ({ property }: { property: Property }) => {
             <Image
                 source={
                     property.images.length > 0
-                    ? { uri: property.images[0] }
+                    ? property.images[0]
                     : require("@/assets/images/kribb.png")
                 }
-                className='w-full h-44'
-                resizeMode='cover'
+                style={{ width: '100%', height: 176 }}
+                contentFit="cover"
+                cachePolicy="memory-disk"
             />
 
             <View className="absolute top-3 left-3 bg-white/90 px-3 py-1 rounded-full">
@@ -38,7 +39,6 @@ const FeaturedCard = ({ property }: { property: Property }) => {
                 </Text>
             </View>
 
-            {/* Sold Badge */}
             {property.is_sold && (
                 <View className="absolute top-3 right-3 bg-red-500 px-3 py-1 rounded-full">
                     <Text className="text-xs font-semibold text-white">Sold</Text>
@@ -46,10 +46,7 @@ const FeaturedCard = ({ property }: { property: Property }) => {
             )}
 
             <View className='p-4'>
-                <Text 
-                    className='text-base font-bold text-gray-800 mb-1'
-                    numberOfLines={1}
-                >
+                <Text className='text-base font-bold text-gray-800 mb-1' numberOfLines={1}>
                     {property.title}
                 </Text>
 
@@ -68,24 +65,17 @@ const FeaturedCard = ({ property }: { property: Property }) => {
                     <View className="flex-row items-center gap-3">
                         <View className="flex-row items-center gap-1">
                             <Ionicons name="bed-outline" size={13} color="#6B7280" />
-                            <Text className="text-xs text-gray-500">
-                            {property.bedrooms}
-                            </Text>
+                            <Text className="text-xs text-gray-500">{property.bedrooms}</Text>
                         </View>
-
                         <View className="flex-row items-center gap-1">
                             <Ionicons name="water-outline" size={13} color="#6B7280" />
-                            <Text className="text-xs text-gray-500">
-                            {property.bathrooms}
-                            </Text>
+                            <Text className="text-xs text-gray-500">{property.bathrooms}</Text>
                         </View>
                     </View>
                 </View>
             </View>
-
-            
         </TouchableOpacity>
     )
 }
 
-export default FeaturedCard
+export default memo(FeaturedCard);
