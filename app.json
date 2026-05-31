@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Property-Listing-App",
-    "slug": "Property-Listing-App",
+    "name": "Kribb",
+    "slug": "kribb",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/kribb.png",
@@ -20,7 +20,9 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.PropertyListingApp"
+      "package": "com.kribb.app",
+      "versionCode": 1,
+      "permissions": ["android.permission.READ_MEDIA_IMAGES", "android.permission.CAMERA"]
     },
     "web": {
       "output": "static",
@@ -50,6 +52,9 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "privacyPolicyUrl": "https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478"
     }
   }
 }

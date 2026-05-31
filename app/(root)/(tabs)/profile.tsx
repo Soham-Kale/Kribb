@@ -5,12 +5,14 @@ import React, { useState } from 'react'
 import { View, Text, ActivityIndicator, Image, TouchableOpacity, Alert, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker'
+import { useUserStore } from '@/store/userStore';
 
 const ProfileScreen = () => {
 
     const router = useRouter();
     const { user, isLoaded } = useUser();
     const { signOut } = useAuth();
+    const isAdmin = useUserStore((state) => state.isAdmin);
     const [isUpdating, setIsUpdating] = useState(false);
 
     const handleSignOut = async() => {
@@ -105,11 +107,18 @@ const ProfileScreen = () => {
             </View>
 
             <View className='px-6 gap-4'>
-                <MenuItem 
+                <MenuItem
                     icon="heart-outline"
                     label="Saved Properties"
                     onPress={() => router.push("/(root)/(tabs)/saved")}
                 />
+                {isAdmin && (
+                    <MenuItem
+                        icon="list-outline"
+                        label="My Listings"
+                        onPress={() => router.push("/(root)/my-listings")}
+                    />
+                )}
                 <MenuItem
                     icon="notifications-outline"
                     label="Notifications"
@@ -126,6 +135,15 @@ const ProfileScreen = () => {
                     onPress={() =>
                         Linking.openURL(
                             "mailto:sohamkale511@gmail.com?subject=Help%20%26%20Support%20-%20Kribb%20App",
+                        )
+                    }
+                />
+                <MenuItem
+                    icon="document-text-outline"
+                    label="Privacy Policy"
+                    onPress={() =>
+                        Linking.openURL(
+                            "https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478",
                         )
                     }
                 />

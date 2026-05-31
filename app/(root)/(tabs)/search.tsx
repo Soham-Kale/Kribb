@@ -1,14 +1,14 @@
+import { SkeletonPropertyCard } from "@/components/SkeletonLoader";
 import {
   View,
   Text,
   TextInput,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Property } from "@/types";
 import { useFilterStore } from "@/store/filterStore";
@@ -21,6 +21,7 @@ export default function SearchScreen() {
     const [results, setResults] = useState<Property[]>([]);
     const [loading, setLoading] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
+    const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const { openFilters } = useLocalSearchParams<{ openFilters?: string }>();
 
@@ -51,7 +52,13 @@ export default function SearchScreen() {
     ].filter(Boolean).length;
 
     useEffect(() => {
-        fetchResults();
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        debounceTimer.current = setTimeout(() => {
+            fetchResults();
+        }, 300);
+        return () => {
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        };
     }, [search, type, bedrooms, minPrice, maxPrice]);
 
     const fetchResults = async () => {
@@ -212,18 +219,16 @@ export default function SearchScreen() {
             </Text>
             }
             ListEmptyComponent={
-                !loading ? (
-                    <View className="items-center py-20">
-                    <Ionicons name="search-outline" size={48} color="#D1D5DB" />
-                    <Text className="text-gray-400 mt-4 text-base">
-                        No properties found
-                    </Text>
-                    <Text className="text-gray-300 text-sm mt-1">
-                        Try a different search or adjust filters
-                    </Text>
+                loading ? (
+                    <View>
+                        {[1,2,3,4,5].map((i) => <SkeletonPropertyCard key={i} />)}
                     </View>
                 ) : (
-                    <ActivityIndicator size="large" color="#2563EB" className="py-20" />
+                    <View className="items-center py-20">
+                        <Ionicons name="search-outline" size={48} color="#D1D5DB" />
+                        <Text className="text-gray-400 mt-4 text-base">No properties found</Text>
+                        <Text className="text-gray-300 text-sm mt-1">Try a different search or adjust filters</Text>
+                    </View>
                 )
             }
         />
