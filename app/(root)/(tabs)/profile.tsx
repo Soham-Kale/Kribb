@@ -5,14 +5,14 @@ import React, { useState } from 'react'
 import { View, Text, ActivityIndicator, Image, TouchableOpacity, Alert, Linking } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker'
-import { useUserStore } from '@/store/userStore';
 
 const ProfileScreen = () => {
 
     const router = useRouter();
     const { user, isLoaded } = useUser();
     const { signOut } = useAuth();
-    const isAdmin = useUserStore((state) => state.isAdmin);
+    // Derived from Clerk session — persisted at signup, no async Supabase fetch required
+    const isAdmin = user?.unsafeMetadata?.isAdmin === true;
     const [isUpdating, setIsUpdating] = useState(false);
 
     const handleSignOut = async() => {

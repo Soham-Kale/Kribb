@@ -28,7 +28,7 @@ export default function MyListingsScreen() {
     const [loading, setLoading] = useState(true);
 
     const fetchListings = useCallback(async () => {
-        if (!userId) return;
+        if (!userId) { setLoading(false); return; }
         setLoading(true);
         const { data, error } = await authSupabase
             .from('properties')
@@ -68,6 +68,7 @@ export default function MyListingsScreen() {
     };
 
     const handleAction = async (_index: number, action: string, property: Property) => {
+        if (!userId) return;
         if (action === 'Edit') {
             router.push(`/(root)/edit-property/${property.id}`);
         } else if (action === 'Mark as Sold') {
@@ -76,8 +77,10 @@ export default function MyListingsScreen() {
                 {
                     text: 'Mark Sold', onPress: async () => {
                         const { error } = await authSupabase
-                            .from('properties').update({ is_sold: true }).eq('id', property.id);
+                            .from('properties').update({ is_sold: true })
+                            .eq('id', property.id).eq('owner_clerk_id', userId);
                         if (!error) fetchListings();
+                        else Alert.alert('Error', 'Failed to mark as sold. Please try again.');
                     }
                 },
             ]);
@@ -87,7 +90,8 @@ export default function MyListingsScreen() {
                 {
                     text: 'Delete', style: 'destructive', onPress: async () => {
                         const { error } = await authSupabase
-                            .from('properties').delete().eq('id', property.id);
+                            .from('properties').delete()
+                            .eq('id', property.id).eq('owner_clerk_id', userId);
                         if (!error) setListings(prev => prev.filter(p => p.id !== property.id));
                         else Alert.alert('Error', 'Failed to delete. Please try again.');
                     }
