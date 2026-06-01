@@ -356,8 +356,10 @@ export default function PropertyDetails() {
                         const P = Number(emiLoan) || 0;
                         const r = (Number(emiRate) || 0) / 12 / 100;
                         const n = (Number(emiTenure) || 0) * 12;
-                        const emi = r > 0 && n > 0 ? (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : 0;
-                        const total = emi * n;
+                        const emi = n === 0 ? 0
+                            : r === 0 ? P / n
+                            : (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                        const total = r === 0 && n > 0 ? P : emi * n;
                         const interest = total - P;
                         return (
                             <View className='bg-white border border-gray-200 rounded-2xl p-4 mb-4'>

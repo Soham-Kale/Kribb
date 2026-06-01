@@ -4,12 +4,14 @@ import { Animated, View } from 'react-native';
 function usePulse() {
     const opacity = useRef(new Animated.Value(0.4)).current;
     useEffect(() => {
-        Animated.loop(
+        const loop = Animated.loop(
             Animated.sequence([
                 Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: true }),
                 Animated.timing(opacity, { toValue: 0.4, duration: 800, useNativeDriver: true }),
             ])
-        ).start();
+        );
+        loop.start();
+        return () => loop.stop();
     }, []);
     return opacity;
 }

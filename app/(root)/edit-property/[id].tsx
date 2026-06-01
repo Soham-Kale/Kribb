@@ -22,7 +22,7 @@ export default function EditPropertyScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const authSupabase = useSupabase();
-    const { userId } = useAuth();
+    const { userId, isLoaded: authLoaded } = useAuth();
 
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -45,6 +45,7 @@ export default function EditPropertyScreen() {
     const [localImages, setLocalImages] = useState<string[]>([]);
 
     useEffect(() => {
+        if (!authLoaded || !userId) return;
         const load = async () => {
             const { data, error } = await authSupabase
                 .from('properties').select('*').eq('id', id).single();
@@ -76,9 +77,14 @@ export default function EditPropertyScreen() {
             setLoading(false);
         };
         load();
-    }, [id]);
+    }, [id, userId, authLoaded]);
 
     const handlePickImages = async () => {
+        const remaining = 6 - images.length;
+        if (remaining <= 0) {
+            Alert.alert('Limit reached', 'You can add up to 6 photos per listing.');
+            return;
+        }
         const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permission.granted) {
             Alert.alert('Permission Required', 'Please allow photo library access.');
@@ -86,7 +92,7 @@ export default function EditPropertyScreen() {
         }
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'images', allowsMultipleSelection: true,
-            quality: 0.7, base64: true, selectionLimit: 6,
+            quality: 0.7, base64: true, selectionLimit: remaining,
         });
         if (result.canceled) return;
         setUploadingImages(true);
@@ -104,8 +110,8 @@ export default function EditPropertyScreen() {
                 previewUris.push(asset.uri);
             } catch { Alert.alert('Upload Failed', 'One or more images failed.'); }
         }
-        setImages(prev => [...prev, ...uploadedUrls]);
-        setLocalImages(prev => [...prev, ...previewUris]);
+        setImages(prev => [...prev, ...uploadedUrls].slice(0, 6));
+        setLocalImages(prev => [...prev, ...previewUris].slice(0, 6));
         setUploadingImages(false);
     };
 
