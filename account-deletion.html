@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Delete Your Account — Kribb</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    background: #1d4ed8;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { color: white; font-size: 20px; font-weight: 700; }
+  header span { color: #bfdbfe; font-size: 14px; }
+  .container { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+  .card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+  p { color: #475569; margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .step:last-child { border-bottom: none; padding-bottom: 0; }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: #1d4ed8;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-text strong { display: block; color: #0f172a; font-weight: 600; margin-bottom: 2px; }
+  .step-text span { color: #64748b; font-size: 14px; }
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  .data-table th { background: #f1f5f9; padding: 10px 14px; text-align: left; font-weight: 600; color: #374151; }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #475569; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .deleted { color: #dc2626; font-weight: 600; }
+  .retained { color: #d97706; font-weight: 600; }
+  .email-btn {
+    display: inline-block;
+    background: #1d4ed8;
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 16px;
+  }
+  .note {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #92400e;
+    margin-top: 16px;
+  }
+  footer {
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+    padding: 32px 24px;
+    border-top: 1px solid #e2e8f0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Kribb</h1>
+    <span>Property Listings India &nbsp;·&nbsp; Account Deletion Request</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>How to Delete Your Account</h2>
+    <p>You can delete your Kribb account and all associated data using either of the two methods below. Deletion is permanent and cannot be undone.</p>
+
+    <div style="margin-top: 20px;">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Open the Kribb app on your phone</strong>
+          <span>Make sure you are signed in to the account you want to delete.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Go to Profile tab → Settings</strong>
+          <span>Tap the Profile icon at the bottom right of the screen, then tap Settings.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Scroll down and tap "Delete Account"</strong>
+          <span>A confirmation prompt will appear. Confirm to permanently delete your account.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <strong>Deletion is immediate</strong>
+          <span>Your account and all associated data are deleted instantly. You will be signed out automatically.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Request Deletion by Email</h2>
+    <p>If you cannot access the app, you can request account deletion by sending an email to our support address. Include the email address associated with your Kribb account.</p>
+    <p>We will process your request and confirm deletion within <strong>7 business days</strong>.</p>
+    <a class="email-btn" href="mailto:sohamkale511@gmail.com?subject=Account%20Deletion%20Request%20-%20Kribb&body=Please%20delete%20my%20Kribb%20account.%0A%0ARegistered%20email%3A%20">
+      Request Deletion via Email
+    </a>
+    <div class="note">
+      Use the email address registered to your Kribb account when sending this request so we can identify and delete the correct account.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What Data is Deleted</h2>
+    <table class="data-table">
+      <tr>
+        <th>Data Type</th>
+        <th>Action</th>
+        <th>Timeframe</th>
+      </tr>
+      <tr>
+        <td>Account profile (name, email, avatar)</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Property listings you created</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Property images you uploaded</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Saved properties list</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Notification preferences</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Authentication credentials</td>
+        <td class="deleted">Permanently deleted</td>
+        <td>Immediately</td>
+      </tr>
+      <tr>
+        <td>Anonymised aggregate analytics</td>
+        <td class="retained">Retained (non-identifiable)</td>
+        <td>Indefinitely</td>
+      </tr>
+    </table>
+    <p style="margin-top: 14px; font-size: 13px; color: #94a3b8;">No data is sold to third parties at any time. All personal data is permanently and irreversibly removed upon account deletion.</p>
+  </div>
+
+</div>
+
+<footer>
+  Kribb — Property Listings India &nbsp;·&nbsp; Developer: Main Eye Publishing &nbsp;·&nbsp;
+  <a href="https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478" style="color:#3b82f6;">Privacy Policy</a>
+</footer>
+
+</body>
+</html>
