@@ -21,12 +21,14 @@ import { useSupabase } from '@/hooks/useSupabase';
 export default function SettingsScreen() {
     const router = useRouter();
     const { user, isLoaded } = useUser();
+    const { signOut } = useAuth();
     const authSupabase = useSupabase();
 
     const [firstName, setFirstName] = useState(user?.firstName ?? '');
     const [lastName, setLastName] = useState(user?.lastName ?? '');
     const [isSaving, setIsSaving] = useState(false);
     const [isUpdatingImage, setIsUpdatingImage] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleUpdateProfileImage = async () => {
         try {
@@ -61,6 +63,36 @@ export default function SettingsScreen() {
         } finally {
             setIsUpdatingImage(false);
         }
+    };
+
+    const handleDeleteAccount = () => {
+        Alert.alert(
+            'Delete Account',
+            'This will permanently delete your account, all your listings, saved properties, and profile data. This cannot be undone.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Delete permanently',
+                    style: 'destructive',
+                    onPress: async () => {
+                        setIsDeleting(true);
+                        try {
+                            const uid = user!.id;
+                            await authSupabase.from('saved_properties').delete().eq('user_clerk_id', uid);
+                            await authSupabase.from('properties').delete().eq('owner_clerk_id', uid);
+                            await authSupabase.from('users').delete().eq('clerk_id', uid);
+                            await user!.delete();
+                            await signOut();
+                            router.replace('/(auth)/sign-in');
+                        } catch {
+                            Alert.alert('Error', 'Failed to delete account. Please try again or contact support.');
+                        } finally {
+                            setIsDeleting(false);
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     const handleSave = async () => {
@@ -186,6 +218,27 @@ export default function SettingsScreen() {
                                 <Text className="text-white font-bold text-base">Save Changes</Text>
                             )}
                         </TouchableOpacity>
+
+                        <View className="mt-8 border-t border-gray-100 pt-6">
+                            <Text className="text-sm font-semibold text-gray-700 mb-1">Danger Zone</Text>
+                            <Text className="text-xs text-gray-400 mb-4">
+                                Deleting your account is permanent. All your listings, saved properties, and profile data will be removed immediately.
+                            </Text>
+                            <TouchableOpacity
+                                onPress={handleDeleteAccount}
+                                disabled={isDeleting}
+                                className="flex-row items-center justify-center gap-2 border border-red-200 bg-red-50 rounded-2xl py-4"
+                            >
+                                {isDeleting ? (
+                                    <ActivityIndicator color="#EF4444" />
+                                ) : (
+                                    <>
+                                        <Ionicons name="trash-outline" size={18} color="#EF4444" />
+                                        <Text className="text-red-500 font-semibold text-base">Delete Account</Text>
+                                    </>
+                                )}
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
