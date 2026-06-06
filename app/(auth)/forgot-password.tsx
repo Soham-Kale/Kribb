@@ -114,7 +114,7 @@ export default function ForgotPassword() {
                     <>
                         <Text className='text-3xl font-bold text-gray-800 mb-2'>Reset Password</Text>
                         <Text className='text-gray-500 mb-6'>
-                            Enter your email and we'll send you a verification code.
+                            Enter your email and we&apos;ll send you a verification code.
                         </Text>
 
                         <TextInput
