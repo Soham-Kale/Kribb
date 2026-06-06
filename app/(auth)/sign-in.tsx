@@ -177,6 +177,13 @@ export default function SignIn() {
                 )}
 
                 <TouchableOpacity
+                    onPress={() => router.push({ pathname: '/(auth)/forgot-password', params: { email } } as any)}
+                    className='self-end mb-4'
+                >
+                    <Text className='text-blue-600 font-semibold'>Forgot Password?</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
                     onPress={onSignInPress}
                     disabled={isLoading}
                     className='w-full py-4 bg-blue-600 rounded-xl items-center mb-4'
