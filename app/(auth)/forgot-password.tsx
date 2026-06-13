@@ -24,7 +24,7 @@ export default function ForgotPassword() {
         }
         setIsLoading(true)
         try {
-            await clerk.client?.signIn.create({
+            await clerk.client?.signIn?.create({
                 strategy: 'reset_password_email_code',
                 identifier: email.trim(),
             })
@@ -57,12 +57,12 @@ export default function ForgotPassword() {
         }
         setIsLoading(true)
         try {
-            const result = await clerk.client?.signIn.attemptFirstFactor({
+            const result = await clerk.client?.signIn?.attemptFirstFactor({
                 strategy: 'reset_password_email_code',
                 code: code.trim(),
                 password: newPassword,
             })
-            if (result?.status === 'complete') {
+            if (result && result.status === 'complete') {
                 await clerk.setActive({ session: result.createdSessionId })
                 router.replace('/')
             }
@@ -82,7 +82,7 @@ export default function ForgotPassword() {
         setError('')
         setIsLoading(true)
         try {
-            await clerk.client?.signIn.create({
+            await clerk.client?.signIn?.create({
                 strategy: 'reset_password_email_code',
                 identifier: email.trim(),
             })

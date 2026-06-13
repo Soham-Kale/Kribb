@@ -2,7 +2,7 @@
   "expo": {
     "name": "Kribb - Property Listings App",
     "slug": "kribb",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/kribb.png",
     "scheme": "propertylistingapp",
@@ -22,7 +22,12 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.kribb.app",
       "versionCode": 2,
-      "permissions": ["android.permission.READ_MEDIA_IMAGES", "android.permission.CAMERA"]
+      "permissions": [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "output": "static",
@@ -47,14 +52,20 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-font",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
-      "privacyPolicyUrl": "https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478"
+      "privacyPolicyUrl": "https://www.termsfeed.com/live/a41c7447-ff69-43e9-b2c6-1caf1409c478",
+      "router": {},
+      "eas": {
+        "projectId": "4974f115-8e72-4a9e-bc21-965917564b91"
+      }
     }
   }
 }
