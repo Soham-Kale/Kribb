@@ -7,7 +7,7 @@
     "icon": "./assets/images/kribb.png",
     "scheme": "propertylistingapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
