@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert, ActivityIndicator, Share, TextInput } from 'react-native'
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Image, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Linking, Alert, ActivityIndicator, Share, TextInput, Modal, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '@clerk/expo';
@@ -11,9 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSavedProperty } from '@/hooks/useSavedProperty';
 import { formatPrice } from '@/lib/utils';
 import { WebView } from 'react-native-webview';
-import ImageViewing from 'react-native-image-viewing';
-
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ADMIN_PHONE = "7721027579";
 
@@ -443,12 +441,45 @@ export default function PropertyDetails() {
                 </View>
             </ScrollView>
 
-            <ImageViewing
-                images={property.images.map((uri) => ({ uri }))}
-                imageIndex={activeIndex}
+            <Modal
                 visible={imageViewerVisible}
+                transparent={false}
                 onRequestClose={() => setImageViewerVisible(false)}
-            />
+                statusBarTranslucent
+            >
+                <View style={{ flex: 1, backgroundColor: '#000' }}>
+                    <StatusBar hidden />
+                    <FlatList
+                        data={property.images}
+                        horizontal
+                        pagingEnabled
+                        initialScrollIndex={activeIndex}
+                        getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(_, i) => `viewer-${i}`}
+                        renderItem={({ item }) => (
+                            <View style={{ width, height }}>
+                                <Image
+                                    source={{ uri: item }}
+                                    style={{ width, height }}
+                                    resizeMode="contain"
+                                />
+                            </View>
+                        )}
+                    />
+                    <TouchableOpacity
+                        onPress={() => setImageViewerVisible(false)}
+                        style={{ position: 'absolute', top: 50, right: 20, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, padding: 8 }}
+                    >
+                        <Ionicons name="close" size={24} color="white" />
+                    </TouchableOpacity>
+                    <View style={{ position: 'absolute', bottom: 40, alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.5)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
+                        <Text style={{ color: 'white', fontSize: 14 }}>
+                            {activeIndex + 1}/{property.images.length}
+                        </Text>
+                    </View>
+                </View>
+            </Modal>
         </View>
     )
 }
